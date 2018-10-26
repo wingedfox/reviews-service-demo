@@ -15,10 +15,10 @@ Prerequisites
 -------------
 * git v2.7+
 * Runtime
- * docker v18+
- * docker-compose v1.21+
+  * docker v18+
+  * docker-compose v1.21+
 * Development
- * nodejs v6+
+  * nodejs v6+
 
 Installation
 ------------
@@ -31,13 +31,13 @@ Configuration
 -------------
 Configuration is layered and listed in order of precedence
 * Dockerized setup
- * `./docker/.env`
- * `./docker/docker-compose.yaml`
- * `<service>/config/default.yaml`
+  * `./docker/.env`
+  * `./docker/docker-compose.yaml`
+  * `<service>/config/default.yaml`
 * Development setup
- * environment variables
- * `<service>/config/local.yaml`
- * `<service>/config/default.yaml`
+  * environment variables
+  * `<service>/config/local.yaml`
+  * `<service>/config/default.yaml`
 
 Running
 -------
@@ -46,7 +46,8 @@ Running
 $ cd reviews-service-demo/docker
 $ docker-compose up -d
 ```
-NOTE: all necessary configuration options are in `./docker/.env`, review it before running environment.
+
+NOTE: All necessary configuration options are in `./docker/.env`, review it before running environment.
 
 ### Run development environment
 ```bash
@@ -56,13 +57,16 @@ $ docker-compose up -d pg mq
 $ cd ../packages/<service>/
 $ npm start
 ```
-NOTE: use `local.yaml` or env vars for correct MQ and PG access credentials.
+
+NOTE: Use `local.yaml` or env vars for correct MQ and PG access credentials.
 
 Testing
 -------
 
 ### Manual
 Use supplied Docs UI for testing, all examples are attached to the correspponding methods: http://localhost:8080/docs
+
+NOTE: Profanity is checked against a dictionary of 'bad words'.
 
 ### Automated
 ```bash
@@ -73,15 +77,15 @@ $ npm run test
 Environment
 -----------
 * Build scripts:
- * Dockerfile: `./Dockerfile`
- * docker-compose.yml: `./docker/docker-compose.yml`
+  * Dockerfile: `./Dockerfile`
+  * docker-compose.yml: `./docker/docker-compose.yml`
 * Web services:
- * REST API: http://localhost:8080/v1/
- * Api Docs: http://localhost:8080/docs
+  * REST API: http://localhost:8080/v1/
+  * Api Docs: http://localhost:8080/docs
 * Database: `pg://localhost:5432`
 * MQ:
- * API: `amqp://localhost:5672`
- * Management Console: http://localhost:15672
+  * API: `amqp://localhost:5672`
+  * Management Console: http://localhost:15672
 * Logs: `docker logs -f <service_name>`
 
 Example queries
