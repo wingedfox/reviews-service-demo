@@ -1,0 +1,30 @@
+{
+  "name": "utils",
+  "version": "0.0.0",
+  "description": "Project utilities",
+  "author": "Ilya WingedFox Lebedev <ilya@lebedev.net>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "ajv": "^6.5.4",
+    "amqplib": "^0.5.2",
+    "amqplib-rpc": "^3.1.0",
+    "config": "^2.0.1",
+    "cron": "^1.4.1",
+    "json-schema-ref-parser": "^6.0.1",
+    "knex": "^0.15.2",
+    "pg": "^7.5.0",
+    "winston": "^3.1.0"
+  }
+}

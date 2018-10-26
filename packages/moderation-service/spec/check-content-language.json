@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Data schema for moderation task",
+  "description": "Describes message sent for moderation",
+  "properties": {
+    "id": {
+      "$ref": "./type/common/uuid.json",
+      "description": "Text unique id"
+    },
+    "text": {
+      "type": "string",
+      "description": "Text to check",
+      "maxLength": 2048
+    }
+  },
+  "required": ["id", "text"]
+}

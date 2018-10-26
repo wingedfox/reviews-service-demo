@@ -1,0 +1,43 @@
+'use strict';
+
+{{#operations}}
+{{#operation}}
+
+/**
+ {{#summary}}
+ * {{{summary}}}
+ {{/summary}}
+ {{#notes}}
+ * {{{notes}}}
+ {{/notes}}
+ *
+{{#allParams}}
+ * {{paramName}} {{{dataType}}} {{{description}}}{{^required}} (optional){{/required}}
+{{/allParams}}
+{{^returnType}}
+ * no response value expected for this operation
+{{/returnType}}
+{{#returnType}}
+ * returns {{{returnType}}}
+{{/returnType}}
+ **/
+exports.{{{operationId}}} = async function({{#allParams}}{{paramName}}{{#hasMore}},{{/hasMore}}{{/allParams}}) {
+  {{#returnType}}
+  var examples = {};
+  {{#examples}}
+  {{#-first}}
+  examples['{{contentType}}'] = [];
+  {{/-first}}
+  examples['{{contentType}}'].push({{{example}}});
+  {{/examples}}
+  if (Object.keys(examples).length > 0) {
+    return Object.entries(examples)[0][1][0];
+  }
+  {{/returnType}}
+  {{^returnType}}
+  return void(null);
+  {{/returnType}}
+}
+
+{{/operation}}
+{{/operations}}

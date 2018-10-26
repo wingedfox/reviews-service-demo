@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Default error",
+  "description": "Common error schema, other errors should extend this one for back-compatibility",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Always false for errors",
+      "enum": [
+        false
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Error reason"
+    }
+  },
+  "required": ["success", "reason"]
+}

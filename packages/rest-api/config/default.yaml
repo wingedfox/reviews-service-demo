@@ -1,0 +1,40 @@
+app:
+  notification:
+    review:
+      exchange: notifications
+      routingKey: review-published
+
+## Cron jobs
+cron:
+  job:
+    - schedule: '*/5 * * * * *'
+      controller: performModeration
+    - schedule: '0 */2 * * * *'
+      controller: moderationWatchdog
+
+## Database properties
+db:
+  connection:
+    host: localhost
+    port: 5432
+    user: postgres
+    password: postgres
+    database: postgres
+
+## Logging properties
+log:
+  # ERROR, WARN, INFO, VERBOSE, DEBUG
+  level: INFO
+
+## MQ properties
+mq:
+  connection:
+    username: guest
+    password: guest
+    hostname: localhost
+    port: 5672
+    vhost: /
+
+## Server properties
+server:
+  port: 8080

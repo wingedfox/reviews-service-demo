@@ -1,0 +1,18 @@
+db:
+  connection:
+    user: PGUSER
+    password: PGPASSWORD
+    host: PGHOST
+    port: PGPORT
+    database: PGDATABASE
+
+log:
+  level: LOG_LEVEL
+
+mq:
+  connection:
+    username: MQUSER
+    password: MQPASSWORD
+    hostname: MQHOST
+    port: MQPORT
+    vhost: MQVHOST

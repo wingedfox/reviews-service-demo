@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Product response",
+  "description": "Data schema for the product and reviews",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Product id",
+      "pattern": "^\\d+$",
+      "maxLength": 12
+    },
+    "name": {
+      "type": "string",
+      "description": "Product name",
+      "maxLength": 500
+    },
+    "number": {
+      "type": "string",
+      "description": "Product number"
+    },
+    "reviews": {
+      "type": "array",
+      "description": "List of available reviews",
+      "items":
+        {
+          "type": "object",
+          "description": "Review item",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Reviewer name",
+              "maxLength": 200
+            },
+            "review": {
+              "type": "string",
+              "description": "Unformatted text",
+              "maxLength": 4000
+            }
+          },
+          "required": ["name", "review"]
+        }
+
+    }
+  },
+  "required": ["id", "name", "number", "reviews"]
+}

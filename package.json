@@ -1,0 +1,19 @@
+{
+  "name": "recommendations",
+  "version": "0.0.0",
+  "description": "Example recommendations service",
+  "main": " ",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ilya Wingedfox Lebedev <ilya@lebedev.net>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "lerna": "^3.4.3",
+    "lerna-update-wizard": "^0.9.4"
+  },
+  "devDependencies": {
+    "got": "^9.2.2",
+    "jest": "^23.6.0"
+  }
+}

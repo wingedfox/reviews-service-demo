@@ -1,0 +1,35 @@
+## Cron jobs
+#cron:
+#  - schedule: '* * * * * *'
+#    controller: controller name
+
+## Database properties
+#db:
+#  host: localhost
+#  port: 5432
+#  user: postgres
+#  password: postgres
+#  database: postgres
+
+## Logging properties
+log:
+  # ERROR, WARN, INFO, VERBOSE, DEBUG
+  level: INFO
+
+## MQ properties
+mq:
+  connection:
+    username: guest
+    password: guest
+    hostname: localhost
+    port: 5672
+    vhost: /
+  rpc:
+    - exchange: reviews
+      queue: moderation
+      routingKey: moderation-task
+      controller: check-content-language
+
+## Server properties
+#server:
+#  port: 8080

@@ -1,0 +1,18 @@
+{
+    "defaults": {
+        "serverPort": "3000",
+        "implFolder": "services"
+    },
+    "directories": [
+        "api", "controllers", "utils", "services"
+    ],
+    "transformations": [
+        { "input": "index.mustache", "output": "index.js" },
+        { "input": "swagger.mustache", "output": "api/swagger.yaml" },
+        { "input": "writer.mustache", "output": "utils/writer.js" }
+    ],
+    "perApi": [
+        { "input": "controller.mustache", "output": "controllers/{{name}}.js" },
+        { "input": "service.mustache", "output": "{{implFolder}}/{{name}}ApiService.js" }
+    ]
+}

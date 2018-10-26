@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Review entity",
+  "description": "Review entity with all properties",
+  "allOf": [
+  	{
+      "$ref": "./review-core.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "../../type/common/uuid.json",
+          "description": "Review ID",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "Review state",
+          "enum": [
+            "created",
+            "moderated",
+            "published",
+            "archived"
+          ],
+          "readOnly": true
+        }
+      },
+      "required": ["id", "status"]
+    }
+  ]
+}

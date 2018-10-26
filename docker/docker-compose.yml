@@ -1,0 +1,116 @@
+version: '3'
+services:
+  db:
+    restart: always
+    build:
+      context: postgres
+      args:
+        SEED_REPO: ${POSTGRES_SEED_REPO}
+        SEED_REF: ${POSTGRES_SEED_REF}
+        SEED_FILE: ${POSTGRES_SEED_FILE}
+    ports:
+      - "5432:5432"
+    volumes:
+      - /tmp/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-testdb}
+    hostname: db.${HOSTNAME}
+  mq:
+    restart: always
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - /tmp/rabbitmq:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-rabbit}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-rabbit}
+      - RABBITMQ_DEFAULT_VHOST=${RABBITMQ_VHOST:-/}
+      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE:-secret cookie}
+    hostname: mq.${HOSTNAME}
+  rest-api:
+    restart: on-failure
+    build:
+      context: ..
+      args:
+          APP: rest-api
+    ports:
+      - "8080:8080"
+    links:
+      - db
+      - mq
+    depends_on:
+      - db
+      - mq
+    environment:
+      # development || production || test
+      - NODE_ENV=${NODE_ENV:-production}
+      - MQHOST=${RABBITMQ_HOST:-mq}
+      - MQPORT=${RABBITMQ_PORT:-5672}
+      - MQUSER=${RABBITMQ_USER:-guest}
+      - MQPASSWORD=${RABBITMQ_PASSWORD:-guest}
+      - MQVHOST=${RABBITMQ_VHOST:-/}
+      - PGHOST=${POSTGRES_HOST:-db}
+      - PGPORT=${POSTGRES_PORT:-5432}
+      - PGUSER=${POSTGRES_USER:-postgres}
+      - PGPASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - PGDATABASE=${POSTGRES_DB:-testdb}
+      - APP_PORT=${REST_API_PORT:-8080}
+    hostname: rest-api.${HOSTNAME}
+  notification-service:
+    restart: on-failure
+    build:
+      context: ..
+      args:
+          APP: notification-service
+    links:
+      - mq
+      - rest-api
+    depends_on:
+      - mq
+      - rest-api
+    environment:
+      # development || production || test
+      - NODE_ENV=${NODE_ENV:-production}
+      - MQHOST=${RABBITMQ_HOST:-mq}
+      - MQPORT=${RABBITMQ_PORT:-5672}
+      - MQUSER=${RABBITMQ_USER:-guest}
+      - MQPASSWORD=${RABBITMQ_PASSWORD:-guest}
+      - MQVHOST=${RABBITMQ_VHOST:-/}
+    hostname: notification-service.${HOSTNAME}
+  moderation-service:
+    restart: on-failure
+    build:
+      context: ..
+      args:
+          APP: moderation-service
+    links:
+      - mq
+      - rest-api
+    depends_on:
+      - mq
+      - rest-api
+    environment:
+      # development || production || test
+      - NODE_ENV=${NODE_ENV:-production}
+      - MQHOST=${RABBITMQ_HOST:-mq}
+      - MQPORT=${RABBITMQ_PORT:-5672}
+      - MQUSER=${RABBITMQ_USER:-guest}
+      - MQPASSWORD=${RABBITMQ_PASSWORD:-guest}
+      - MQVHOST=${RABBITMQ_VHOST:-/}
+    hostname: moderation-service.${HOSTNAME}
+#  nginx:
+#    restart: on-failure
+#    build:
+#      context: nginx/
+#    ports:
+#      - "80:8080"
+#    links:
+#      - rest-api
+#    depends_on:
+#      - rest-api
+#    environment:
+#    hostname: public.${HOSTNAME}

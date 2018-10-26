@@ -1,0 +1,22 @@
+{
+  "name": "moderation-service",
+  "version": "0.0.0",
+  "description": "Moderate everything",
+  "author": "Ilya WingedFox Lebedev <ilya@lebedev.net>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/moderation-service.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "start": "node lib/moderation-service.js"
+  },
+  "dependencies": {
+    "bad-words-relaxed": "^1.6.5",
+    "utils": "^0.0.0"
+  }
+}

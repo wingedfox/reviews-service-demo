@@ -1,0 +1,22 @@
+{
+  "name": "notification-service",
+  "version": "0.0.0",
+  "description": "Send notifications on events",
+  "author": "Ilya WingedFox Lebedev <ilya@lebedev.net>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/notification-service.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "start": "node lib/notification-service.js"
+  },
+  "dependencies": {
+    "got": "^9.2.2",
+    "utils": "^0.0.0"
+  }
+}

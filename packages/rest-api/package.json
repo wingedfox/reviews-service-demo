@@ -1,0 +1,33 @@
+{
+  "name": "rest-api",
+  "version": "0.0.0",
+  "description": "Reviews REST API",
+  "author": "Ilya WingedFox Lebedev <ilya@lebedev.net>",
+  "homepage": "",
+  "license": "UNLICENSED",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "bundle": "speccy resolve -o spec/openapi-resolved.yml spec/swagger.yml -j",
+    "lint": "speccy lint spec/swagger.yml -j -v",
+    "pregenerate": "npm run bundle",
+    "generate": "cg --verbose --templates ./codegen/templates/ --output . ./codegen/webapp spec/openapi-resolved.yml",
+    "prepare": "npm run generate",
+    "prestart": "knex migrate:latest",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express-request-id": "^1.4.1",
+    "knex": "^0.15.2",
+    "oas-tools": "^2.0.3",
+    "openapi-codegen": "^1.5.2",
+    "pg": "^7.5.0",
+    "speccy": "^0.8.4",
+    "utils": "^0.0.0"
+  }
+}

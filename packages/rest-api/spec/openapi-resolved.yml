@@ -1,0 +1,402 @@
+openapi: 3.0.1
+info:
+  description: |
+    Reviews REST API
+  version: 1.0.0
+  title: Reviews Api
+  contact:
+    email: ilya@lebedev.net
+tags:
+  - name: Products
+    description: Products operations
+  - name: Reports
+    description: Retrieve usage stats
+  - name: Reviews
+    description: Create and retrieve reviews
+paths:
+  /v1/review:
+    post:
+      x-router-controller: Reviews
+      tags:
+        - Reviews
+      summary: Create a review
+      description: Operation submits a review to a moderation queue
+      operationId: reviewCreate
+      requestBody:
+        $ref: '#/components/requestBodies/review-create'
+      responses:
+        '200':
+          $ref: '#/components/responses/review-create'
+        '405':
+          $ref: '#/components/responses/review-create-invalid-request'
+        default:
+          $ref: '#/components/responses/error-default'
+  '/v1/review/{id}':
+    get:
+      parameters:
+        - in: path
+          name: id
+          description: Review id
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      x-router-controller: Reviews
+      tags:
+        - Reviews
+      summary: Retrieves a single review
+      description: Retrieves a review and moderation status
+      operationId: reviewRetrieve
+      responses:
+        '200':
+          $ref: '#/components/responses/review'
+        '404':
+          $ref: '#/components/responses/error-not-found'
+        default:
+          $ref: '#/components/responses/error-default'
+  /v1/product:
+    get:
+      x-router-controller: Products
+      tags:
+        - Products
+      summary: Retrieve products
+      description: Get a list of products ids and titles
+      operationId: productList
+      responses:
+        '200':
+          $ref: '#/components/responses/product-list'
+        default:
+          $ref: '#/components/responses/error-default'
+  '/v1/product/{id}':
+    get:
+      parameters:
+        - in: path
+          name: id
+          description: Product id
+          required: true
+          schema:
+            $ref: '#/components/schemas/numeric-id'
+      x-router-controller: Products
+      tags:
+        - Products
+      summary: Product info
+      description: Retrieves single product and associated reviews
+      operationId: productRetrieve
+      responses:
+        '200':
+          $ref: '#/components/responses/product'
+        '404':
+          $ref: '#/components/responses/error-not-found'
+        default:
+          $ref: '#/components/responses/error-default'
+components:
+  parameters:
+    access-token:
+      in: header
+      name: Authorization
+      description: Some access token provided by an authority
+      required: true
+      schema:
+        type: string
+  responses:
+    error-default:
+      description: Default error response
+      content:
+        application/json:
+          schema:
+            type: object
+            title: Default error
+            description: 'Common error schema, other errors should extend this one for back-compatibility'
+            properties:
+              success:
+                type: boolean
+                description: Always false for errors
+                enum:
+                  - false
+              reason:
+                type: string
+                description: Error reason
+            required:
+              - success
+              - reason
+          example:
+            success: 'false'
+            reason: Unknown error
+    error-not-found:
+      description: Review status
+      content:
+        application/json:
+          schema:
+            type: object
+            title: Something is not found error
+            description: Common error representation for a missing entity
+            allOf:
+              - type: object
+                title: Default error
+                description: 'Common error schema, other errors should extend this one for back-compatibility'
+                properties:
+                  success:
+                    type: boolean
+                    description: Always false for errors
+                    enum:
+                      - false
+                  reason:
+                    type: string
+                    description: Error reason
+                required:
+                  - success
+                  - reason
+          example:
+            success: 'false'
+            reason: 'Hey, there''s no such thing here'
+    review:
+      description: Review Entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Review'
+          example:
+            name: Elvis Presley
+            email: theking@elvismansion.com
+            productid: '87823'
+            review: |-
+              Cause there's, no room to rhumba in a sports car
+              You can't move forward or back
+              There's no room to do what the beat tells you to
+              Without throwing your spine outta wack
+            status: PUBLISHED
+    review-create:
+      description: Review Create Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Review'
+          example:
+            productid: 4
+            name: Elvis Presley
+            email: theking@elvismansion.com
+            rating: 4
+            review: |-
+              Cause there's, no room to rhumba in a sports car
+              You can't move forward or back
+              There's no room to do what the beat tells you to
+              Without throwing your spine outta wack
+            status: created
+    review-create-invalid-request:
+      description: Review status
+      content:
+        application/json:
+          schema:
+            type: object
+            title: Review creation error
+            description: Describes review creation errors which are not covered by other cases
+            allOf:
+              - $ref: '#/components/responses/error-not-found/content/application~1json/schema/allOf/0'
+                x-miro: /home/adminuser/workspace/tests/malwarebytes/packages/rest-api/spec/response/schema/error-default.json
+          example:
+            success: 'false'
+            reason: No one likes your review
+    product:
+      description: Single product and attached reviews
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+          example:
+            productid: '7340'
+            productname: Mountain Bike
+            number: BE-2908
+            reviews:
+              - name: Billie Jean King
+                review: 'Hey, it''s cooool!'
+    product-list:
+      description: List of products and attached reviews
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductList'
+          example:
+            list:
+              - id: '7340'
+                name: Mountain Bike
+                reviews:
+                  - name: Billie Jean King
+                    review: 'Hey, it''s cooool!'
+  requestBodies:
+    review-create:
+      description: Creates new review
+      required: true
+      x-name: reviewCreate
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReviewCreateRequest'
+          example:
+            name: Elvis Presley
+            email: theking@elvismansion.com
+            productid: '87823'
+            rating: 4
+            review: |-
+              Cause there's, no room to rhumba in a sports car
+              You can't move forward or back
+              There's no room to do what the beat tells you to
+              Without throwing your spine outta wack
+  schemas:
+    numeric-id:
+      title: Plain numeric id
+      type: integer
+      minimum: 0
+    uuid:
+      title: UUID string format definition
+      type: string
+      pattern: '^(?:[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}|[A-F0-9]{8}-(?:[A-F0-9]{4}-){3}[A-F0-9]{12})$'
+    Product:
+      type: object
+      title: Product response
+      description: Data schema for the product and reviews
+      properties:
+        id:
+          type: string
+          description: Product id
+          pattern: ^\d+$
+          maxLength: 12
+        name:
+          type: string
+          description: Product name
+          maxLength: 500
+        number:
+          type: string
+          description: Product number
+        reviews:
+          type: array
+          description: List of available reviews
+          items:
+            type: object
+            description: Review item
+            properties:
+              name:
+                type: string
+                description: Reviewer name
+                maxLength: 200
+              review:
+                type: string
+                description: Unformatted text
+                maxLength: 4000
+            required:
+              - name
+              - review
+      required:
+        - id
+        - name
+        - number
+        - reviews
+    ProductList:
+      type: object
+      title: Product list response
+      description: Data schema for the products list
+      properties:
+        list:
+          type: array
+          description: List of products
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Product id
+                pattern: ^\d+$
+                maxLength: 12
+              name:
+                type: string
+                description: Product name
+                maxLength: 500
+              reviews:
+                type: array
+                description: List of available reviews
+                items:
+                  type: object
+                  description: Review item
+                  properties:
+                    name:
+                      type: string
+                      description: Reviewer name
+                      maxLength: 200
+                    review:
+                      type: string
+                      description: Unformatted text
+                      maxLength: 4000
+                  required:
+                    - name
+                    - review
+            required:
+              - id
+              - name
+              - reviews
+      required:
+        - list
+    Review:
+      type: object
+      title: Review response
+      description: Data schema for review entity response
+      allOf:
+        - type: object
+          title: Review entity
+          description: Review entity with all properties
+          allOf:
+            - $ref: '#/components/schemas/ReviewCreateRequest/allOf/0'
+              x-miro: /home/adminuser/workspace/tests/malwarebytes/packages/rest-api/spec/type/entity/review-core.json
+            - type: object
+              properties:
+                id:
+                  title: UUID string format definition
+                  type: string
+                  pattern: '^(?:[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}|[A-F0-9]{8}-(?:[A-F0-9]{4}-){3}[A-F0-9]{12})$'
+                status:
+                  type: string
+                  description: Review state
+                  enum:
+                    - created
+                    - moderated
+                    - published
+                    - archived
+                  readOnly: true
+              required:
+                - id
+                - status
+    ReviewCreateRequest:
+      type: object
+      title: Review create request
+      description: Data schema for review create request
+      allOf:
+        - type: object
+          title: Review entity
+          description: Data schema for review core properties
+          properties:
+            email:
+              type: string
+              description: Reviewer email
+              format: email
+              maxLength: 200
+            name:
+              type: string
+              description: Reviewer name
+              maxLength: 200
+            productid:
+              type: string
+              description: Product id
+              pattern: ^\d+$
+              maxLength: 12
+            rating:
+              type: integer
+              description: Product rating
+              maximum: 5
+              minimum: 1
+            review:
+              type: string
+              description: Unformatted text
+              maxLength: 4000
+          required:
+            - email
+            - name
+            - productid
+            - rating
+            - review

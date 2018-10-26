@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Review create request",
+  "description": "Data schema for review create request",
+  "allOf": [
+  	{
+      "$ref": "../../type/entity/review-core.json"
+    }
+  ]
+}

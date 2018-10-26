@@ -1,0 +1,204 @@
+openapi: 3.0.1
+info:
+  description: |
+    Reviews REST API
+  version: 1.0.0
+  title: Reviews Api
+  contact:
+    email: ilya@lebedev.net
+#servers:
+#  - url: 'https://{environment}.{server}{version}'
+#    variables:
+#      environment:
+#        description: API environment naming scheme for rolling releases
+#        default: api    # Production server
+#        enum:
+#          - api         # Production server
+#          - api.dev     # Development server
+#          - api.staging # Staging server
+#      server:
+#        default: example.com
+#        description: Server name provisioned by the deployment scripts
+#      version:
+#        default: '/'
+#        description: Server api version
+tags:
+  - name: Products
+    description: Products operations
+  - name: Reviews
+    description: Create and retrieve reviews
+paths:
+  /v1/review:
+# TODO: authenticated access
+#    parameters:
+#      - $ref: '#/components/parameters/access-token'
+    post:
+      x-router-controller: Reviews
+      tags:
+        - Reviews
+      summary: Create a review
+      description: Operation submits a review to a moderation queue
+      operationId: reviewCreate
+      requestBody:
+        $ref: '#/components/requestBodies/review-create'
+      responses:
+        200:
+          $ref: '#/components/responses/review-create'
+        405:
+          $ref: '#/components/responses/review-create-invalid-request'
+        default:
+          $ref: '#/components/responses/error-default'
+  /v1/review/{id}:
+    get:
+      parameters:
+# TODO: authenticated access
+#      - $ref: '#/components/parameters/access-token'
+        - in: path
+          name: id
+          description: Review id
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      x-router-controller: Reviews
+      tags:
+        - Reviews
+      summary: Retrieves a single review
+      description: Retrieves a review and moderation status
+      operationId: reviewRetrieve
+      responses:
+        200:
+          $ref: '#/components/responses/review'
+        404:
+          $ref: '#/components/responses/error-not-found'
+        default:
+          $ref: '#/components/responses/error-default'
+  /v1/product:
+# TODO: authenticated access
+#    parameters:
+#      - $ref: '#/components/parameters/access-token'
+    get:
+      x-router-controller: Products
+      tags:
+        - Products
+      summary: Retrieve products
+      description: Get a list of products ids and titles
+      operationId: productList
+      responses:
+        200:
+          $ref: '#/components/responses/product-list'
+        default:
+          $ref: '#/components/responses/error-default'
+  /v1/product/{id}:
+    get:
+      parameters:
+# TODO: authenticated access
+#      - $ref: '#/components/parameters/access-token'
+        - in: path
+          name: id
+          description: Product id
+          required: true
+          schema:
+            $ref: '#/components/schemas/numeric-id'
+      x-router-controller: Products
+      tags:
+        - Products
+      summary: Product info
+      description: Retrieves single product and associated reviews
+      operationId: productRetrieve
+      responses:
+        200:
+          $ref: '#/components/responses/product'
+        404:
+          $ref: '#/components/responses/error-not-found'
+        default:
+          $ref: '#/components/responses/error-default'
+components:
+  parameters:
+    access-token:
+      in: header
+      name: Authorization
+      description: Some access token provided by an authority
+      required: true
+      schema:
+        type: string
+  responses:
+    error-default:
+      description: Default error response
+      content:
+        application/json:
+          schema:
+            $ref: ./response/schema/error-default.json
+          example:
+            $ref: ./response/example/error-default.json
+    error-not-found:
+      description: Review status
+      content:
+        application/json:
+          schema:
+            $ref: ./response/schema/error-not-found.json
+          example:
+            $ref: ./response/example/error-not-found.json
+    review:
+      description: Review Entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Review'
+          example:
+            $ref: ./response/example/review.json
+    review-create:
+      description: Review Create Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Review'
+          example:
+            $ref: ./response/example/review-create.json
+    review-create-invalid-request:
+      description: Review status
+      content:
+        application/json:
+          schema:
+            $ref: ./response/schema/review-create-invalid-request.json
+          example:
+            $ref: ./response/example/review-create-invalid-request.json
+    product:
+      description: Single product and attached reviews
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+          example:
+            $ref: ./response/example/product.json
+    product-list:
+      description: List of products and attached reviews
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductList'
+          example:
+            $ref: ./response/example/product-list.json
+  requestBodies:
+    review-create:
+      description: Creates new review
+      required: true
+      x-name: reviewCreate
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReviewCreateRequest'
+          example:
+            $ref: ./request/example/review-create.json
+  schemas:
+    numeric-id:
+      $ref: ./type/common/numeric-id.json
+    uuid:
+      $ref: ./type/common/uuid.json
+    Product:
+      $ref: ./response/schema/product.json
+    ProductList:
+      $ref: ./response/schema/product-list.json
+    Review:
+      $ref: ./response/schema/review.json
+    ReviewCreateRequest:
+      $ref: ./request/schema/review-create.json

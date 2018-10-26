@@ -1,0 +1,39 @@
+'use strict';
+
+const utils = require('../utils/writer.js');
+const logger = require('utils').logger;
+
+{{#operations}}
+let {{classname}};
+try {
+  {{classname}} = require('../../lib/{{implFolder}}/{{classname}}Service');
+} catch (e) {
+  logger.warn('{{classname}} implementation is not found at "../../lib/{{implFolder}}/{{classname}}Service", use stub "../{{implFolder}}/{{classname}}Service"');
+  {{classname}} = require('../{{implFolder}}/{{classname}}Service');
+}
+{{#operation}}
+
+module.exports.{{nickname}} = async function {{nickname}} (req, res, next) {
+  logger.info('Request processing begin', {requestId: req.id});
+
+  {{#allParams}}
+  var {{paramName}} = req.swagger.params['{{#isBodyParam}}{{#vendorExtensions}}{{x-name}}{{/vendorExtensions}}{{/isBodyParam}}{{^isBodyParam}}{{baseName}}{{/isBodyParam}}'].value;
+  {{/allParams}}
+
+  try {
+    const result = await {{classname}}.{{nickname}}({{#allParams}}{{paramName}}{{#hasMore}},{{/hasMore}}{{/allParams}})
+
+    utils.writeJson(res, result);
+    logger.debug('[controller::{{nickname}}] Request processing end', {requestId: req.id});
+  } catch (err) {
+    // TODO: make better errors
+
+    utils.writeJson(res, {
+      success: false,
+      reason: err.message
+    }, 400);
+    logger.error('Request processing error', {error: err.message, requestId: req.id});
+  }
+};
+{{/operation}}
+{{/operations}}

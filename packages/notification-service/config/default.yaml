@@ -1,0 +1,41 @@
+## Cron jobs
+#cron:
+#  - schedule: '* * * * * *'
+#    controller: controller name
+
+## Database properties
+db:
+  connection:
+    host: localhost
+    port: 5432
+    user: postgres
+    password: postgres
+    database: postgres
+
+## Logging properties
+log:
+  # ERROR, WARN, INFO, VERBOSE, DEBUG
+  level: DEBUG
+
+## MQ properties
+mq:
+  connection:
+    username: guest
+    password: guest
+    hostname: localhost
+    port: 5672
+    vhost: /
+  subscribers:
+    - exchange: notifications
+      queue: notifications
+      routingKey: review-published
+      controller: review-published
+## Server properties
+#server:
+#  port: 8080
+
+services:
+  review:
+    url: http://rest-api:8080/v1/review/
+  product:
+    url: http://rest-api:8080/v1/product/

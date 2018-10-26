@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UUID string format definition",
+  "type": "string",
+  "pattern": "^(?:[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}|[A-F0-9]{8}-(?:[A-F0-9]{4}-){3}[A-F0-9]{12})$"
+}
